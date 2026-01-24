@@ -1,1 +1,1 @@
-export const appBuilderPath: string
+export const appBuilderPath: string;
