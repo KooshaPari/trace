@@ -120,4 +120,4 @@ export type HoistOptions = {
  * @returns hoisted tree copy
  */
 export declare const hoist: (tree: HoisterTree, opts?: HoistOptions) => HoisterResult;
-export {};
+

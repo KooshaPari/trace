@@ -30,4 +30,4 @@ export declare class AsyncEventEmitter<T extends EventMap> implements TypedEvent
     filterListeners<E extends keyof T>(event: E, type: HandlerType | undefined): Handle[];
     clear(): void;
 }
-export {};
+

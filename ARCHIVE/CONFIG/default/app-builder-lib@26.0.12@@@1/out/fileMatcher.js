@@ -131,7 +131,7 @@ function getMainFileMatchers(appDir, destination, macroExpander, platformSpecifi
         }
     }
     if (insertExculdeNodeModulesIndex !== -1) {
-        patterns.splice(insertExculdeNodeModulesIndex, 0, ...["!**/node_modules/**"]);
+        patterns.splice(insertExculdeNodeModulesIndex, 0, "!**/node_modules/**");
     }
     else {
         customFirstPatterns.push("!**/node_modules/**");

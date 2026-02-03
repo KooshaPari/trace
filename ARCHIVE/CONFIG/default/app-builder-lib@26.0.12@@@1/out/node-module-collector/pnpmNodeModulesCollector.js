@@ -25,7 +25,7 @@ class PnpmNodeModulesCollector extends nodeModulesCollector_1.NodeModulesCollect
     extractProductionDependencyTree(tree) {
         const p = path.normalize(this.resolvePath(tree.path));
         const packageJson = require(path.join(p, "package.json"));
-        const deps = { ...(tree.dependencies || {}), ...(tree.optionalDependencies || {}) };
+        const deps = { ...tree.dependencies, ...tree.optionalDependencies };
         const dependencies = Object.entries(deps).reduce((acc, curr) => {
             var _b, _c;
             const [packageName, dependency] = curr;

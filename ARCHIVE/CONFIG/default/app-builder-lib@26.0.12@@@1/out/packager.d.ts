@@ -89,4 +89,4 @@ export interface BuildResult {
     readonly platformToTargets: Map<Platform, Map<string, Target>>;
     readonly configuration: Configuration;
 }
-export {};
+

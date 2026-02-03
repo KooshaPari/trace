@@ -35,4 +35,4 @@ export interface DependencyGraph {
 interface PackageDependencies {
     readonly dependencies: string[];
 }
-export {};
+
