@@ -317,7 +317,7 @@ jobs:
         REDIS_URL: redis://localhost:6379
         PYTHONPATH: ${{ github.workspace }}/src
       run: |
-        pytest tests/ -m "property" -v --tb=short --maxfail=10 || true
+        pytest tests/ -m "property" -v --tb=short --maxfail=10
 
     - name: Run chaos/resilience tests
       env:
@@ -325,7 +325,7 @@ jobs:
         REDIS_URL: redis://localhost:6379
         PYTHONPATH: ${{ github.workspace }}/src
       run: |
-        pytest tests/ -m "chaos" -v --tb=short --maxfail=10 || true
+        pytest tests/ -m "chaos" -v --tb=short --maxfail=10
 
     - name: Generate exploratory test summary
       if: always()
