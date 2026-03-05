@@ -8,7 +8,8 @@ Vitest.describe('cn utility', () => {
   });
 
   Vitest.it('handles conditional classes', () => {
-    Vitest.expect(cn('base', false && 'hidden', 'visible')).toBe('base visible');
+    const hidden = false;
+    Vitest.expect(cn('base', hidden && 'hidden', 'visible')).toBe('base visible');
   });
 
   Vitest.it('handles undefined and null values', () => {

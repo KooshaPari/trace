@@ -8,7 +8,7 @@ Vitest.describe('Slider component', () => {
     const { container } = render(<Slider value={[50]} />);
     const root = container.firstChild as HTMLElement;
     Vitest.expect(root).toBeInTheDocument();
-    Vitest.expect(root.getAttribute('data-orientation')).toBe('horizontal');
+    Vitest.expect(root.dataset.orientation).toBe('horizontal');
   });
 
   Vitest.it('renders the track and range elements', () => {

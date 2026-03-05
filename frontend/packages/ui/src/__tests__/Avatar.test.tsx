@@ -46,7 +46,7 @@ Vitest.describe('AvatarImage component', () => {
     );
     const img = screen.queryByRole('img');
     // AvatarImage may not render immediately due to Radix loading behavior
-    // so we verify Vitest.it either renders or the fallback is shown
+    // So we verify it either renders or the fallback is shown.
     if (img) {
       Vitest.expect(img).toHaveAttribute('src', 'https://example.com/avatar.jpg');
     } else {

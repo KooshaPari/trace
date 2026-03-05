@@ -1,9 +1,9 @@
-import { cva, type VariantProps } from 'class-variance-authority';
+import * as ClassVarianceAuthority from 'class-variance-authority';
 import * as React from 'react';
 
 import { cn } from '../lib/utils';
 
-const alertVariants = cva(
+const alertVariants = ClassVarianceAuthority.cva(
   'relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground transition-all duration-200 ease-out',
   {
     defaultVariants: {
@@ -24,7 +24,7 @@ const alertVariants = cva(
 
 export const Alert = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
+  React.HTMLAttributes<HTMLDivElement> & ClassVarianceAuthority.VariantProps<typeof alertVariants>
 >(({ className, variant, ...props }, ref) => (
   <div ref={ref} role='alert' className={cn(alertVariants({ variant }), className)} {...props} />
 ));

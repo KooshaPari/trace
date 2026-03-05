@@ -10,15 +10,20 @@ interface CollapsibleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   className?: string;
 }
 
+interface CollapsibleChildProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
 const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
   ({ open = false, onOpenChange, children, className, ...props }, ref) => (
       <div ref={ref} className={cn('space-y-2', className)} {...props}>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child, {
+            return React.cloneElement(child as React.ReactElement<CollapsibleChildProps>, {
               onOpenChange,
               open,
-            } as any);
+            });
           }
           return child;
         })}
@@ -39,11 +44,16 @@ interface CollapsibleTriggerProps extends Omit<
 }
 
 const CollapsibleTrigger = React.forwardRef<HTMLButtonElement, CollapsibleTriggerProps>(
-  ({ open = false, onOpenChange, children, className, ...props }, ref) => (
+  ({ open = false, onOpenChange, children, className, ...props }, ref) => {
+    const handleClick = React.useCallback(() => {
+      onOpenChange?.(!open);
+    }, [onOpenChange, open]);
+
+    return (
       <button
         ref={ref}
         type='button'
-        onClick={() => onOpenChange?.(!open)}
+        onClick={handleClick}
         className={cn('w-full flex items-center justify-between transition-all', className)}
         {...props}
       >
@@ -55,7 +65,8 @@ const CollapsibleTrigger = React.forwardRef<HTMLButtonElement, CollapsibleTrigge
           )}
         />
       </button>
-    ),
+    );
+  },
 );
 
 CollapsibleTrigger.displayName = 'CollapsibleTrigger';
