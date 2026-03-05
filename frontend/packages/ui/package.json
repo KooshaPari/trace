@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "format": "biome format --write src/",
+    "format": "oxfmt src/",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage"
   },
