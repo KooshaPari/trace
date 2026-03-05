@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { createRef } from 'react';
-import { describe, expect, it } from 'vitest';
+import * as Vitest from 'vitest';
 
 import {
   Select,
@@ -10,8 +10,8 @@ import {
   SelectValue,
 } from '../components/Select';
 
-describe('Select component', () => {
-  it('renders the trigger with combobox role', () => {
+Vitest.describe('Select component', () => {
+  Vitest.it('renders the trigger with combobox role', () => {
     render(
       <Select>
         <SelectTrigger>
@@ -22,10 +22,10 @@ describe('Select component', () => {
         </SelectContent>
       </Select>,
     );
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    Vitest.expect(screen.getByRole('combobox')).toBeInTheDocument();
   });
 
-  it('renders with placeholder when no value selected', () => {
+  Vitest.it('renders with placeholder when no value selected', () => {
     render(
       <Select>
         <SelectTrigger>
@@ -36,10 +36,10 @@ describe('Select component', () => {
         </SelectContent>
       </Select>,
     );
-    expect(screen.getByText('Choose...')).toBeInTheDocument();
+    Vitest.expect(screen.getByText('Choose...')).toBeInTheDocument();
   });
 
-  it('trigger has aria-expanded attribute', () => {
+  Vitest.it('trigger has aria-expanded attribute', () => {
     render(
       <Select>
         <SelectTrigger>
@@ -50,12 +50,12 @@ describe('Select component', () => {
         </SelectContent>
       </Select>,
     );
-    expect(screen.getByRole('combobox')).toHaveAttribute('aria-expanded', 'false');
+    Vitest.expect(screen.getByRole('combobox')).toHaveAttribute('aria-expanded', 'false');
   });
 });
 
-describe('SelectTrigger component', () => {
-  it('applies custom className', () => {
+Vitest.describe('SelectTrigger component', () => {
+  Vitest.it('applies custom className', () => {
     render(
       <Select>
         <SelectTrigger className='custom-trigger'>
@@ -63,10 +63,10 @@ describe('SelectTrigger component', () => {
         </SelectTrigger>
       </Select>,
     );
-    expect(screen.getByRole('combobox').className).toContain('custom-trigger');
+    Vitest.expect(screen.getByRole('combobox').className).toContain('custom-trigger');
   });
 
-  it('can be disabled', () => {
+  Vitest.it('can be disabled', () => {
     render(
       <Select disabled>
         <SelectTrigger>
@@ -74,10 +74,10 @@ describe('SelectTrigger component', () => {
         </SelectTrigger>
       </Select>,
     );
-    expect(screen.getByRole('combobox')).toBeDisabled();
+    Vitest.expect(screen.getByRole('combobox')).toBeDisabled();
   });
 
-  it('has data-state=closed by default', () => {
+  Vitest.it('has data-state=closed by default', () => {
     render(
       <Select>
         <SelectTrigger>
@@ -85,10 +85,10 @@ describe('SelectTrigger component', () => {
         </SelectTrigger>
       </Select>,
     );
-    expect(screen.getByRole('combobox')).toHaveAttribute('data-state', 'closed');
+    Vitest.expect(screen.getByRole('combobox')).toHaveAttribute('data-state', 'closed');
   });
 
-  it('passes through additional props', () => {
+  Vitest.it('passes through additional props', () => {
     render(
       <Select>
         <SelectTrigger data-testid='select-trigger'>
@@ -96,6 +96,6 @@ describe('SelectTrigger component', () => {
         </SelectTrigger>
       </Select>,
     );
-    expect(screen.getByTestId('select-trigger')).toBeInTheDocument();
+    Vitest.expect(screen.getByTestId('select-trigger')).toBeInTheDocument();
   });
 });
