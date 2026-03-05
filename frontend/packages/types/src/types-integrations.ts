@@ -215,11 +215,11 @@ export interface SyncConflict {
 
 export interface IntegrationStats {
   projectId: string;
-  providers: Array<{
+  providers: {
     provider: IntegrationProvider;
     status: CredentialStatus;
     credentialType: CredentialType;
-  }>;
+  }[];
   mappings: {
     total: number;
     active: number;
@@ -245,11 +245,11 @@ export interface SyncStatusSummary {
     completed: number;
   };
   recentSyncs: SyncLog[];
-  providers: Array<{
+  providers: {
     provider: IntegrationProvider;
     status: CredentialStatus;
     lastValidated?: string | undefined;
-  }>;
+  }[];
 }
 
 // GitHub-specific types

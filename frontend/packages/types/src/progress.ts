@@ -224,7 +224,7 @@ export interface ProgressSnapshot {
 export interface ProjectMetrics {
   // Item counts
   totalItems: number;
-  byStatus: Record<string, number>; // e.g., { "todo": 10, "in_progress": 5 }
+  byStatus: Record<string, number>; // E.g., { "todo": 10, "in_progress": 5 }
   byPriority: Record<string, number>;
   byType: Record<string, number>;
 
@@ -569,7 +569,7 @@ export function daysUntilTarget(targetDate: string): number {
  * @returns {number} Rounded completion percentage.
  */
 export function calculateProgressPercentage(completed: number, total: number): number {
-  if (total === 0) return 0;
+  if (total === 0) { return 0; }
   return Math.round((completed / total) * 100);
 }
 
@@ -581,7 +581,7 @@ export function calculateProgressPercentage(completed: number, total: number): n
  * @returns {number} Rounded average completed points for recent periods.
  */
 export function calculateVelocity(history: VelocityDataPoint[], periods = 3): number {
-  if (history.length === 0) return 0;
+  if (history.length === 0) { return 0; }
   const recent = history.slice(-periods);
   const totalCompleted = recent.reduce((sum, point) => sum + point.completedPoints, 0);
   return Math.round(totalCompleted / recent.length);
@@ -600,7 +600,7 @@ export function estimateCompletionDate(
   velocity: number,
   startDate: Date = new Date(),
 ): Date | null {
-  if (velocity <= 0) return null;
+  if (velocity <= 0) { return null; }
   const daysRemaining = Math.ceil(remainingPoints / velocity);
   const completionDate = new Date(startDate);
   completionDate.setDate(completionDate.getDate() + daysRemaining);

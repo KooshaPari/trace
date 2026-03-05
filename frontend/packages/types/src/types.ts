@@ -706,12 +706,12 @@ export interface TestResult {
   logsUrl?: string | undefined;
   attachments?: string[] | undefined;
   stepResults?:
-    | Array<{
+    | {
         stepNumber: number;
         status: TestResultStatus;
         actualResult?: string | undefined;
         notes?: string | undefined;
-      }>
+      }[]
     | undefined;
   linkedDefectIds?: string[] | undefined;
   createdDefectId?: string | undefined;
@@ -789,13 +789,13 @@ export interface TraceabilityMatrixItem {
   requirementStatus: string;
   isCovered: boolean;
   testCount: number;
-  testCases: Array<{
+  testCases: {
     testCaseId: string;
     coverageType: CoverageType;
     coveragePercentage?: number | undefined;
     lastTestResult?: string | undefined;
     lastTestedAt?: string | undefined;
-  }>;
+  }[];
   overallStatus: string;
 }
 
