@@ -1,4 +1,5 @@
 import { ArrowRight, BarChart3, CheckCircle2, Clock, FileText, Play, XCircle } from 'lucide-react';
+import { useCallback, type ComponentType, type JSX, type MouseEventHandler } from 'react';
 
 import type { Scenario, ScenarioStatus } from '@tracertm/types';
 
@@ -21,7 +22,7 @@ const statusColors: Record<ScenarioStatus, string> = {
   skipped: 'bg-muted text-muted-foreground border-border',
 };
 
-const statusIcons: Record<ScenarioStatus, React.ComponentType<{ className?: string }>> = {
+const statusIcons: Record<ScenarioStatus, ComponentType<{ className?: string }>> = {
   draft: FileText,
   failing: XCircle,
   passing: CheckCircle2,
@@ -36,14 +37,30 @@ export function ScenarioCard({
   onViewTestCases,
   className,
   showExecutionStats = true,
-}: ScenarioCardProps) {
-  const StatusIcon = statusIcons[scenario.status] || FileText;
-  // Compute total steps but mark as intentionally unused
-  undefined;
+}: ScenarioCardProps): JSX.Element {
+  const StatusIcon = statusIcons[scenario.status];
   const executionCount = scenario.executionCount || 0;
   const lastExecuted = scenario.lastRunAt
     ? new Date(scenario.lastRunAt).toLocaleDateString()
     : null;
+  const hasRunAction = onRun !== undefined;
+  const hasTestCasesAction = onViewTestCases !== undefined;
+
+  const handleRunClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    (event) => {
+      event.stopPropagation();
+      onRun?.();
+    },
+    [onRun],
+  );
+
+  const handleViewTestCasesClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    (event) => {
+      event.stopPropagation();
+      onViewTestCases?.();
+    },
+    [onViewTestCases],
+  );
 
   return (
     <Card
@@ -69,16 +86,14 @@ export function ScenarioCard({
               </Badge>
             )}
           </div>
-          {onRun && (
+          {hasRunAction && (
             <Button
               size='icon'
               variant='ghost'
               className='hover:bg-muted/50 h-6 w-6 transition-colors'
-              onClick={(e) => {
-                e.stopPropagation();
-                onRun();
-              }}
+              onClick={handleRunClick}
               title='Run scenario'
+              type='button'
             >
               <Play className='h-3 w-3' />
             </Button>
@@ -119,15 +134,13 @@ export function ScenarioCard({
         )}
 
         {/* Test cases link */}
-        {onViewTestCases && (
+        {hasTestCasesAction && (
           <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewTestCases();
-            }}
+            onClick={handleViewTestCasesClick}
             variant='outline'
             size='sm'
             className='h-7 w-full gap-1 text-xs'
+            type='button'
           >
             View Test Cases
             <ArrowRight className='h-3 w-3' />
