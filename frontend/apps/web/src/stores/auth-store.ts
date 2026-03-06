@@ -313,7 +313,8 @@ const createAuthKitActions = (
       }
 
       if (!isRecordObject(data)) {
-        const typeHint = data === undefined ? 'undefined (JSON parse failed or empty body)' : typeof data;
+        const typeHint =
+          data === undefined ? 'undefined (JSON parse failed or empty body)' : typeof data;
         const bodyPreview =
           typeof data === 'string'
             ? data.slice(0, 150)
@@ -331,7 +332,10 @@ const createAuthKitActions = (
         );
       }
 
-      const authorizationUrl = readStringField(data as Record<string, unknown>, 'authorization_url');
+      const authorizationUrl = readStringField(
+        data as Record<string, unknown>,
+        'authorization_url',
+      );
       if (!authorizationUrl) {
         throw new Error('No authorization URL in response');
       }

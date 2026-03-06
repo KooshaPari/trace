@@ -657,10 +657,20 @@ export function getEntityDepth(entityType: EntityType): number {
 export function getEntityPerspective(
   entityType: EntityType,
 ): 'ui' | 'product' | 'technical' | 'test' | 'design' | 'doc' {
-  if (isUIEntityType(entityType)) { return 'ui'; }
-  if (isProductEntityType(entityType)) { return 'product'; }
-  if (isTechnicalEntityType(entityType)) { return 'technical'; }
-  if (isTestEntityType(entityType)) { return 'test'; }
-  if (isDesignEntityType(entityType)) { return 'design'; }
+  if (isUIEntityType(entityType)) {
+    return 'ui';
+  }
+  if (isProductEntityType(entityType)) {
+    return 'product';
+  }
+  if (isTechnicalEntityType(entityType)) {
+    return 'technical';
+  }
+  if (isTestEntityType(entityType)) {
+    return 'test';
+  }
+  if (isDesignEntityType(entityType)) {
+    return 'design';
+  }
   return 'doc';
 }

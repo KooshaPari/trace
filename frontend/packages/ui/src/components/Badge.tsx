@@ -27,7 +27,8 @@ const badgeVariants = ClassVarianceAuthority.cva(
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     ClassVarianceAuthority.VariantProps<typeof badgeVariants> {}
 
 export function Badge({ className, variant, ...props }: BadgeProps): JSX.Element {

@@ -45,7 +45,10 @@ Vitest.describe('Tabs component', () => {
       </Tabs>,
     );
     Vitest.expect(screen.getByText('Content 2')).toBeInTheDocument();
-    Vitest.expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute('data-state', 'active');
+    Vitest.expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute(
+      'data-state',
+      'active',
+    );
   });
 
   Vitest.it('marks the active tab with data-state=active', () => {
@@ -77,7 +80,10 @@ Vitest.describe('Tabs component', () => {
       </Tabs>,
     );
     Vitest.expect(screen.getByText('Content 2')).toBeInTheDocument();
-    Vitest.expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute('data-state', 'active');
+    Vitest.expect(screen.getByRole('tab', { name: 'Tab 2' })).toHaveAttribute(
+      'data-state',
+      'active',
+    );
   });
 });
 

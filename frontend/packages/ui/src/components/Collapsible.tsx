@@ -17,18 +17,18 @@ interface CollapsibleChildProps {
 
 const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
   ({ open = false, onOpenChange, children, className, ...props }, ref) => (
-      <div ref={ref} className={cn('space-y-2', className)} {...props}>
-        {React.Children.map(children, (child) => {
-          if (React.isValidElement(child)) {
-            return React.cloneElement(child as React.ReactElement<CollapsibleChildProps>, {
-              onOpenChange,
-              open,
-            });
-          }
-          return child;
-        })}
-      </div>
-    ),
+    <div ref={ref} className={cn('space-y-2', className)} {...props}>
+      {React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child as React.ReactElement<CollapsibleChildProps>, {
+            onOpenChange,
+            open,
+          });
+        }
+        return child;
+      })}
+    </div>
+  ),
 );
 
 Collapsible.displayName = 'Collapsible';
@@ -83,18 +83,18 @@ interface CollapsibleContentProps extends Omit<
 
 const CollapsibleContent = React.forwardRef<HTMLDivElement, CollapsibleContentProps>(
   ({ open = false, onOpenChange: _onOpenChange, children, className, ...props }, ref) => (
-      <div
-        ref={ref}
-        className={cn(
-          'overflow-hidden transition-all duration-200',
-          open ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0',
-          className,
-        )}
-        {...props}
-      >
-        {open && children}
-      </div>
-    ),
+    <div
+      ref={ref}
+      className={cn(
+        'overflow-hidden transition-all duration-200',
+        open ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0',
+        className,
+      )}
+      {...props}
+    >
+      {open && children}
+    </div>
+  ),
 );
 
 CollapsibleContent.displayName = 'CollapsibleContent';
