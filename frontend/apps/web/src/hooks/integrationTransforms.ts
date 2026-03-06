@@ -69,7 +69,7 @@ const readRecordArray = (record: ApiRecord, key: string): ApiRecord[] => {
     return [];
   }
 
-  return value.filter(isRecord);
+  return value.filter((item): item is ApiRecord => isRecord(item));
 };
 
 const readUnknownRecord = (record: ApiRecord, key: string): Record<string, unknown> | undefined => {

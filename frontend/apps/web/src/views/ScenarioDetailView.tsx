@@ -1,16 +1,7 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { ArrowLeft } from 'lucide-react';
-import {
-  useCallback,
-  useMemo,
-  useState,
-  type CSSProperties,
-  type ChangeEvent,
-  type Dispatch,
-  type JSX,
-  type SetStateAction,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { GherkinViewer } from '@/components/specifications/bdd/GherkinViewer';
 import { ScenarioCard } from '@/components/specifications/bdd/ScenarioCard';
@@ -39,12 +30,12 @@ function ScenarioActivityCard({
   activities: readonly ScenarioActivity[];
   page: number;
   pageSize: number;
-  progressStyle: CSSProperties;
-  setPage: Dispatch<SetStateAction<number>>;
-  setPageSize: Dispatch<SetStateAction<number>>;
+  progressStyle: React.CSSProperties;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  setPageSize: React.Dispatch<React.SetStateAction<number>>;
   totalActivities: number;
   totalPages: number;
-}): JSX.Element {
+}): React.JSX.Element {
   const handleShowAll = useCallback((): void => {
     setPage(1);
     setPageSize(totalActivities || 1000);
@@ -56,7 +47,7 @@ function ScenarioActivityCard({
   }, [setPage, setPageSize]);
 
   const handleRowsChange = useCallback(
-    (event: ChangeEvent<HTMLSelectElement>): void => {
+    (event: React.ChangeEvent<HTMLSelectElement>): void => {
       setPageSize(Number(event.target.value));
       setPage(1);
     },
@@ -167,7 +158,7 @@ function ScenarioActivityCard({
   );
 }
 
-export function ScenarioDetailView(): JSX.Element {
+export function ScenarioDetailView(): React.JSX.Element {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const scenarioId = params.scenarioId ?? '';
@@ -184,7 +175,7 @@ export function ScenarioDetailView(): JSX.Element {
   );
   const totalActivities = activityData?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalActivities / pageSize));
-  const progressStyle = useMemo<CSSProperties>(
+  const progressStyle = useMemo<React.CSSProperties>(
     () => ({
       width: `${Math.min(100, (page / totalPages) * 100)}%`,
     }),

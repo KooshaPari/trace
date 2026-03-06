@@ -2,11 +2,11 @@ import type { editor } from 'monaco-editor';
 
 import { Editor } from '@monaco-editor/react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useCallback, useMemo, useState, type JSX } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { Badge, Button, Card, cn } from '@tracertm/ui';
 
-import { StepBadge, type StepType } from './StepBadge';
+import * as stepBadgeModule from './StepBadge';
 
 interface GherkinViewerProps {
   content: string;
@@ -15,6 +15,10 @@ interface GherkinViewerProps {
   collapsible?: boolean;
   showLineNumbers?: boolean;
 }
+
+type StepType = stepBadgeModule.StepType;
+
+const { StepBadge } = stepBadgeModule;
 
 interface ParsedGherkin {
   feature?: string;
@@ -87,6 +91,73 @@ function createScenario(line: string): ParsedGherkin['scenarios'][number] {
   };
 }
 
+const finalizeBackground = (
+  result: ParsedGherkin,
+  background: string[],
+): void => {
+  result.background = background;
+};
+
+const handleFeatureLine = (result: ParsedGherkin, trimmed: string): boolean => {
+  if (!trimmed.startsWith('Feature:')) {
+    return false;
+  }
+
+  result.feature = trimmed.replace('Feature:', '').trim();
+  return true;
+};
+
+const handleBackgroundLine = (trimmed: string): boolean => trimmed.startsWith('Background:');
+
+const handleBackgroundStep = (
+  trimmed: string,
+  background: string[],
+): boolean => {
+  if (!isStepLine(trimmed)) {
+    return false;
+  }
+
+  background.push(trimmed);
+  return true;
+};
+
+const handleScenarioLine = (
+  result: ParsedGherkin,
+  currentScenario: ParsedGherkin['scenarios'][number] | null,
+  trimmed: string,
+): ParsedGherkin['scenarios'][number] => {
+  if (currentScenario) {
+    result.scenarios.push(currentScenario);
+  }
+
+  return createScenario(trimmed);
+};
+
+const handleScenarioStep = (
+  currentScenario: ParsedGherkin['scenarios'][number] | null,
+  trimmed: string,
+): boolean => {
+  if (!currentScenario || !isStepLine(trimmed)) {
+    return false;
+  }
+
+  const step = parseStepLine(trimmed);
+  if (step) {
+    currentScenario.steps.push(step);
+  }
+
+  return true;
+};
+
+const handleExamplesLine = (
+  currentScenario: ParsedGherkin['scenarios'][number] | null,
+  trimmed: string,
+): void => {
+  if (trimmed.startsWith('Examples:') && currentScenario) {
+    currentScenario.examples = trimmed;
+  }
+};
+
 function parseGherkin(content: string): ParsedGherkin {
   const result: ParsedGherkin = { scenarios: [] };
   const lines = content.split('\n');
@@ -102,12 +173,11 @@ function parseGherkin(content: string): ParsedGherkin {
       continue;
     }
 
-    if (trimmed.startsWith('Feature:')) {
-      result.feature = trimmed.replace('Feature:', '').trim();
+    if (handleFeatureLine(result, trimmed)) {
       continue;
     }
 
-    if (trimmed.startsWith('Background:')) {
+    if (handleBackgroundLine(trimmed)) {
       inBackground = true;
       continue;
     }
@@ -115,34 +185,24 @@ function parseGherkin(content: string): ParsedGherkin {
     if (inBackground) {
       if (isScenarioLine(trimmed)) {
         inBackground = false;
-        result.background = background;
+        finalizeBackground(result, background);
       }
 
-      if (isStepLine(trimmed)) {
-        background.push(trimmed);
+      if (handleBackgroundStep(trimmed, background)) {
         continue;
       }
     }
 
     if (isScenarioLine(trimmed)) {
-      if (currentScenario) {
-        result.scenarios.push(currentScenario);
-      }
-      currentScenario = createScenario(trimmed);
+      currentScenario = handleScenarioLine(result, currentScenario, trimmed);
       continue;
     }
 
-    if (currentScenario && isStepLine(trimmed)) {
-      const step = parseStepLine(trimmed);
-      if (step) {
-        currentScenario.steps.push(step);
-      }
+    if (handleScenarioStep(currentScenario, trimmed)) {
       continue;
     }
 
-    if (trimmed.startsWith('Examples:') && currentScenario) {
-      currentScenario.examples = trimmed;
-    }
+    handleExamplesLine(currentScenario, trimmed);
   }
 
   if (currentScenario) {
@@ -162,7 +222,7 @@ function RawGherkinCard({
   content: string;
   editorOptions: editor.IStandaloneEditorConstructionOptions;
   height: string;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <Card className={cn('border-border/50 overflow-hidden border', className)}>
       <Editor
@@ -176,7 +236,7 @@ function RawGherkinCard({
   );
 }
 
-function BackgroundSection({ steps }: { steps: readonly string[] }): JSX.Element {
+function BackgroundSection({ steps }: { steps: readonly string[] }): React.JSX.Element {
   return (
     <Card className='border-border/50 bg-muted/30 border p-4'>
       <div className='space-y-3'>
@@ -215,7 +275,7 @@ function ScenarioSection({
   isExpanded: boolean;
   toggleScenario: (index: number) => void;
   scenario: ParsedGherkin['scenarios'][number];
-}): JSX.Element {
+}): React.JSX.Element {
   const scenarioKey = getScenarioKey(scenario);
   const handleToggle = useCallback((): void => {
     toggleScenario(index);
@@ -293,7 +353,7 @@ export function GherkinViewer({
   height = '400px',
   collapsible = true,
   showLineNumbers = true,
-}: GherkinViewerProps): JSX.Element {
+}: GherkinViewerProps): React.JSX.Element {
   const [expandedScenarios, setExpandedScenarios] = useState<Set<number>>(new Set([0]));
   const parsed = useMemo(() => parseGherkin(content), [content]);
   const editorOptions = useMemo(() => buildEditorOptions(showLineNumbers), [showLineNumbers]);
