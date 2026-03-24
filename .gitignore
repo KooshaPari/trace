@@ -113,6 +113,7 @@ backend/**/*.md
 backend/artifacts/
 backend/docs/
 cli/
+!src/tracertm/cli/
 
 # Local MinIO (Homebrew)
 backend/.minio-data/
