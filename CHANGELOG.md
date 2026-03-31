@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-03-29
+
+### Added
+- Evidence gallery with lightbox UI component (#240)
+- Geist dark theme overhaul with hover-expand tooltips and clickable timeline cards (#242, #209, #212)
+- Perf benchmarks and topo-sort unit tests (#247)
+- Go benchmark CI workflow (#256)
+- Docs-site scaffold and verification harness (#259)
+- ADR.md with 12 architecture decisions derived from codebase (#253)
+- Root-level PRD.md and PLAN.md spec documents (#244)
+- Process-compose.yml for local dev stack (#214)
+- Automated alert-to-issue sync workflow (#185)
+
+### Changed
+- Migrated top 20 TODOs to GitHub Issues (#238)
+- Modernized tooling to 2026 standards (#193)
+- Replaced BMAD/spec-kitty with AgilePlus governance (#195)
+- Migrated kitty-specs to AgilePlus format, archived BMAD refs (#211)
+- Unified docs IA with VitePress super-categories (#154)
+- Added no-new-todos and markdownlint precommit hooks (#239)
+
+### Fixed
+- TypeScript errors in web frontend (#260)
+- Vite 8 beta + rolldown build failures (#251)
+- @types/react and @types/react-dom missing dev dependencies (#257)
+- YAML syntax errors in ci.yml and qa-governance.yml (#241, #215)
+- Node OOM on tsc --build — increased heap size (#246)
+- Tailwind/Geist UI types-node upgrade (#249)
+- phenodocsTheme undefined breaking VitePress build (#216)
+- @types/node for tailwind.config.ts type resolution (#213)
+- Broken CI workflow configurations (#221)
+- Duplicate 'with' key in setup-node step (#255)
+- Removed duplicated governance blocks, referenced thegent templates (#210)
+
+### Security
+- Untracked vault tokens, env files, and k8s secrets (#206)
+
 ## [2.0.0] - 2026-02-23
 
 ### Added

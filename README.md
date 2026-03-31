@@ -1,6 +1,6 @@
-![Build Status](https://github.com/Phenotype-Enterprise/trace/actions/workflows/quality-gate.yml/badge.svg)
-![Security Audit](https://github.com/Phenotype-Enterprise/trace/actions/workflows/security-guard.yml/badge.svg)
-![Policy Compliance](https://github.com/Phenotype-Enterprise/trace/actions/workflows/policy-gate.yml/badge.svg)
+![Build Status](https://github.com/KooshaPari/trace/actions/workflows/quality-gate.yml/badge.svg)
+![Security Audit](https://github.com/KooshaPari/trace/actions/workflows/security-guard.yml/badge.svg)
+![Policy Compliance](https://github.com/KooshaPari/trace/actions/workflows/policy-gate.yml/badge.svg)
 
 # TracerTM 🚀
 
