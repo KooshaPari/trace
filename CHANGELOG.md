@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Bumped npm/yarn group (27 updates across 45 directories) (#278)
+
 ## [2.0.0] - 2026-02-23
 
 ### Added
