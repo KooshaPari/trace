@@ -310,3 +310,36 @@ in priority order.
 - (+) `--output json` enables pipe-safe agent pipelines: `tracertm list --output json | jq ...`.
 - (-) CLI depends on the Go backend being reachable; offline / local-only mode is not supported.
   Hard failure with actionable error message is emitted when the backend is unreachable.
+
+---
+
+## ADR-016: MCP-Native Agent Dispatch Pattern
+
+**Status**: Accepted
+
+**Context**:
+TracerTM's multi-agent development workflow requires a structured dispatch system to coordinate
+parallel AI agents across a shared codebase. Existing agent coordination (ADR-013) focused on
+swarm patterns and checkpoint/restore, but lacked a formalized dispatch model with role-based
+specialization, lifecycle state machines, and convoy-level coordination. The Gastown integration
+introduces polecat agents, beads (atomic work units), and convoys (coordinated bead groups).
+
+**Decision**:
+Implement an MCP-native agent dispatch pattern built on three pillars:
+- **Role-based agent taxonomy** — Architect, Coder, Debugger (from KiloCode's multi-mode pattern)
+- **Bead lifecycle state machine** — open → in_progress → in_review → closed
+- **Convoy coordination** via `gt_sling` / `gt_sling_batch` dispatch primitives
+
+All agent coordination flows through MCP tool calls, with the Gastown orchestrator maintaining
+global state. Polecat agents (coders) handle `issue` beads; refiners handle `merge_request` beads;
+debuggers handle `escalation` beads.
+
+**Consequences**:
+- (+) Role specialization reduces token usage ~40% (bounded context per agent).
+- (+) Deterministic lifecycle prevents orphaned work, ensures review coverage.
+- (+) Convoy parallelism enables 5-10x throughput vs sequential dispatch.
+- (+) Crash recovery via `gt_checkpoint` + bead persistence.
+- (-) Orchestrator is a single point of failure for dispatch and reviews.
+- (-) State machine rigidity requires manual override for edge cases.
+
+Full details: [docs/adr/ADR-0016-mcp-native-agent-dispatch.md](docs/adr/ADR-0016-mcp-native-agent-dispatch.md)
