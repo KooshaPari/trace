@@ -369,7 +369,7 @@ async def generate_items() -> None:
                 priority=int(init["priority"]) if isinstance(init.get("priority"), (int, float)) else 5,
             )
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -389,7 +389,7 @@ async def generate_items() -> None:
             await create_link(session, epic_id, initiative_id, "implements")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -462,7 +462,7 @@ async def generate_items() -> None:
                 await create_link(session, cap_id, epic_id, "supports")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -507,7 +507,7 @@ async def generate_items() -> None:
                 feature_counter += 1
 
                 if feature_counter % 20 == 0:
-                    pass
+                    print(f"Features: {feature_counter} created...")
 
             if feature_counter >= 100:
                 break
@@ -557,7 +557,7 @@ async def generate_items() -> None:
                 story_counter += 1
 
                 if story_counter % 40 == 0:
-                    pass
+                    print(f"Stories: {story_counter} created...")
 
             if story_counter >= 200:
                 break
@@ -596,7 +596,7 @@ async def generate_items() -> None:
                 await create_link(session, use_case_id, feature_id, "validates")
 
             if (idx + 1) % 20 == 0:
-                pass
+                print(f"Use Cases: {idx + 1} created...")
 
         await session.commit()
 
@@ -635,7 +635,7 @@ async def generate_items() -> None:
             await create_link(session, ac_id, story_id, "validates")
 
             if (idx + 1) % 30 == 0:
-                pass
+                print(f"Acceptance Criteria: {idx + 1} created...")
 
         await session.commit()
 
@@ -682,7 +682,7 @@ async def generate_items() -> None:
                 task_counter += 1
 
                 if task_counter % 50 == 0:
-                    pass
+                    print(f"Tasks: {task_counter} created...")
 
         await session.commit()
 

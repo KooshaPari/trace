@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -122,7 +123,7 @@ def _validate_dag(steps: dict[str, dict]) -> None:
             if dep not in steps:
                 print(f"Step '{name}' depends on undefined step '{dep}'.", file=sys.stderr)
                 raise SystemExit(1)
-    in_degree = {s: 0 for s in steps}
+    in_degree = dict.fromkeys(steps, 0)
     for name, cfg in steps.items():
         for dep in cfg.get("deps", []):
             if dep in steps:
@@ -144,7 +145,7 @@ def _validate_dag(steps: dict[str, dict]) -> None:
 
 def topological_tiers(steps: dict[str, dict]) -> list[list[str]]:
     """Return steps in tiers (each tier can run in parallel)."""
-    in_degree = {s: 0 for s in steps}
+    in_degree = dict.fromkeys(steps, 0)
     for name, cfg in steps.items():
         for dep in cfg.get("deps", []):
             if dep in steps:
@@ -190,8 +191,8 @@ def run_step(
     start = time.perf_counter()
     try:
         proc = subprocess.run(
-            command,
-            shell=True,
+            shlex.split(command),
+            shell=False,
             cwd=cwd,
             capture_output=True,
             text=True,

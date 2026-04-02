@@ -1464,7 +1464,7 @@ async def generate_documentation() -> None:
                 await create_link(session, adr_id, epic_id, "documents")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1489,7 +1489,7 @@ async def generate_documentation() -> None:
                 await create_link(session, spec_id, story_id, "documents")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1514,7 +1514,7 @@ async def generate_documentation() -> None:
                 await create_link(session, api_id, spec_id, "documents")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1534,7 +1534,7 @@ async def generate_documentation() -> None:
                 await create_link(session, guide_id, feature_id, "documents")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1561,7 +1561,7 @@ async def generate_documentation() -> None:
                 await create_link(session, tutorial_id, feature_id, "demonstrates")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1588,7 +1588,7 @@ async def generate_documentation() -> None:
                 await create_link(session, ts_id, api_id, "documents")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1610,7 +1610,7 @@ async def generate_documentation() -> None:
                     await create_link(session, release_id, feature_id, "releases")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 
@@ -1635,7 +1635,7 @@ async def generate_documentation() -> None:
                 await create_link(session, diagram_id, spec_id, "illustrates")
 
             if (idx + 1) % 10 == 0:
-                pass
+                print(f"Progress: {idx + 1} items generated...")
 
         await session.commit()
 

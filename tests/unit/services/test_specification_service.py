@@ -11,7 +11,6 @@ for parsing and managing structured specifications in TraceRTM.
 """
 
 from typing import Any
-
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest

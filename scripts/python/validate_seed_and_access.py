@@ -107,9 +107,7 @@ def resolve_user_id(conn: Any, link_email: str | None, link_user_id: str | None)
 def validate_account(conn: Any) -> bool:
     """Ensure account exists and report status."""
     try:
-        created = ensure_account(conn)
-        if created:
-            pass
+        ensure_account(conn)
         return True
     except Exception:
         return False
@@ -129,12 +127,10 @@ def get_and_display_projects(conn: Any) -> tuple[list, bool]:
     if not projects:
         return [], False
 
-    for _pid, _pname in projects[:5]:
-        pass
     if len(projects) > 5:
-        pass
+        print(f"Note: Showing first 5 of {len(projects)} projects")
 
-    return projects, True
+    return projects[:5], True
 
 
 def display_entity_counts(conn: Any) -> bool:
@@ -176,9 +172,7 @@ def display_entity_counts(conn: Any) -> bool:
 def link_user_to_account(conn: Any, link_user_id: str) -> bool:
     """Link a user to the seed account."""
     try:
-        inserted = link_user(conn, link_user_id)
-        if inserted:
-            pass
+        link_user(conn, link_user_id)
         return True
     except Exception:
         return False

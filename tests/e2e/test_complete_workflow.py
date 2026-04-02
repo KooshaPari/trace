@@ -19,6 +19,7 @@ from tracertm.services.traceability_service import TraceabilityService
 @pytest.mark.asyncio
 async def test_complete_project_workflow(db_session: AsyncSession) -> None:
     """Test complete project workflow from creation to traceability."""
+    # Traces to: FR-RTM-001, FR-RTM-002, FR-RTM-003, FR-RTM-004, FR-LINK-003, FR-LINK-004, FR-GRAPH-001, FR-GRAPH-002, FR-SPEC-001, FR-TENANT-001
     # 1. Create project
     project_repo = ProjectRepository(db_session)
     project = await project_repo.create(
@@ -95,6 +96,7 @@ async def test_complete_project_workflow(db_session: AsyncSession) -> None:
 @pytest.mark.asyncio
 async def test_bulk_operation_workflow(db_session: AsyncSession) -> None:
     """Test bulk operation workflow."""
+    # Traces to: FR-RTM-001, FR-PM-001
     # 1. Create project with items
     project_repo = ProjectRepository(db_session)
     project = await project_repo.create(name="Bulk Test Project", description="Test")
@@ -137,6 +139,7 @@ async def test_bulk_operation_workflow(db_session: AsyncSession) -> None:
 @pytest.mark.asyncio
 async def test_agent_coordination_workflow(db_session: AsyncSession) -> None:
     """Test agent coordination workflow."""
+    # Traces to: FR-TENANT-001, FR-TENANT-002
     # 1. Create project
     project_repo = ProjectRepository(db_session)
     project = await project_repo.create(name="Agent Test Project", description="Test")
@@ -167,6 +170,7 @@ async def test_agent_coordination_workflow(db_session: AsyncSession) -> None:
 @pytest.mark.asyncio
 async def test_event_sourcing_workflow(db_session: AsyncSession) -> None:
     """Test event sourcing and audit trail workflow."""
+    # Traces to: FR-COMP-001 (audit logging), FR-COMP-002 (event sourcing for SLSA)
     # 1. Create project and items
     project_repo = ProjectRepository(db_session)
     project = await project_repo.create(name="Event Test Project", description="Test")
@@ -205,6 +209,7 @@ async def test_event_sourcing_workflow(db_session: AsyncSession) -> None:
 @pytest.mark.asyncio
 async def test_multi_agent_concurrent_workflow(db_session: AsyncSession) -> None:
     """Test multi-agent concurrent operations."""
+    # Traces to: FR-TENANT-001, FR-TENANT-002, FR-COLLAB-001
     # 1. Create project
     project_repo = ProjectRepository(db_session)
     project = await project_repo.create(name="Concurrent Test", description="Test")

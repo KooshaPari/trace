@@ -10,6 +10,7 @@ import asyncio
 import time
 from typing import cast
 
+from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -80,7 +81,7 @@ class BenchmarkRunner:
             times.append(elapsed)
 
             if (i + 1) % _PROGRESS_UPDATE_FREQ == 0:
-                pass
+                logger.info(f"Benchmark progress: {i + 1} iterations completed")
 
         avg_time = sum(times) / len(times)
         min_time = min(times)
@@ -128,7 +129,7 @@ class BenchmarkRunner:
             times.append(elapsed)
 
             if (i + 1) % _PROGRESS_UPDATE_FREQ == 0:
-                pass
+                logger.info(f"Benchmark progress: {i + 1} iterations completed")
 
         avg_time = sum(times) / len(times)
         min_time = min(times)
@@ -172,7 +173,7 @@ class BenchmarkRunner:
             times.append(elapsed)
 
             if (i + 1) % _PROGRESS_UPDATE_FREQ == 0:
-                pass
+                logger.info(f"Benchmark progress: {i + 1} iterations completed")
 
         avg_time = sum(times) / len(times)
         min_time = min(times)
@@ -226,7 +227,7 @@ class BenchmarkRunner:
             times.append(elapsed)
 
             if (i + 1) % _PROGRESS_UPDATE_FREQ == 0:
-                pass
+                logger.info(f"Benchmark progress: {i + 1} iterations completed")
 
         avg_time = sum(times) / len(times)
         min_time = min(times)
@@ -263,10 +264,7 @@ class BenchmarkRunner:
         if "old_implementation" in self.results and "with_caching" in self.results:
             old_avg = cast("dict[str, object]", self.results["old_implementation"])["avg_ms"]
             final_avg = cast("dict[str, object]", self.results["with_caching"])["avg_ms"]
-            total_improvement = ((old_avg - final_avg) / old_avg) * 100  # type: ignore[operator]
-
-            if total_improvement >= _TARGET_IMPROVEMENT_PCT:
-                pass
+            ((old_avg - final_avg) / old_avg) * 100  # type: ignore[operator]
 
 
 async def run_benchmark(database_url: str, project_id: str) -> None:

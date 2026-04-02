@@ -691,16 +691,31 @@ app.add_middleware(
 # Include specification routers
 from tracertm.api.middleware import AuthenticationMiddleware, CacheHeadersMiddleware
 from tracertm.api.routers import (
+    accounts,
     adrs,
+    agent,
+    analysis,
     auth,
     blockchain,
     contracts,
+    errors,
     execution,
     features,
+    github,
+    health,
+    health_canary,
+    integrations,
+    item_specs,
+    items,
+    links,
     mcp,
     notifications,
     oauth,
     quality,
+    specifications,
+    system,
+    websocket,
+    workflows,
 )
 
 # Try to import Brotli compression (optional dependency)
@@ -726,8 +741,15 @@ if brotli_available and BrotliMiddleware_ is not None:
 # 2. Cache headers for browser caching optimization
 app.add_middleware(CacheHeadersMiddleware)
 
+# System endpoints (health, metrics, cache, csrf)
+app.include_router(system.router)
+app.include_router(health.router)
+
 # Authentication endpoints (device flow, token management, etc.)
 app.include_router(auth.router)
+
+# OAuth and integration management
+app.include_router(oauth.router)
 
 # Specification routers
 app.include_router(adrs.router, prefix="/api/v1")
@@ -737,17 +759,38 @@ app.include_router(quality.router, prefix="/api/v1")
 app.include_router(notifications.router, prefix="/api/v1")
 app.include_router(blockchain.router, prefix="/api/v1")
 app.include_router(execution.router, prefix="/api/v1")
+app.include_router(specifications.router, prefix="/api/v1")
+app.include_router(item_specs.router, prefix="/api/v1")
+
+# Analysis, Links, Workflows, Accounts routers
+app.include_router(analysis.router, prefix="/api/v1")
+app.include_router(links.router, prefix="/api/v1")
+app.include_router(workflows.router, prefix="/api/v1")
+app.include_router(accounts.router, prefix="/api/v1")
 
 # Agent sessions and workflow
-from tracertm.api.routers import agent
-
 app.include_router(agent.router, prefix="/api/v1")
 
 # MCP router (Model Context Protocol over HTTP)
 app.include_router(mcp.router, prefix="/api/v1")
 
-# OAuth and integration management
-app.include_router(oauth.router)
+# Error handling router
+app.include_router(errors.router, prefix="/api/v1")
+
+# WebSocket router
+app.include_router(websocket.router)
+
+# Health canary router
+app.include_router(health_canary.router)
+
+# Integrations router
+app.include_router(integrations.router, prefix="/api/v1")
+
+# GitHub router
+app.include_router(github.router, prefix="/api/v1")
+
+# Items router
+app.include_router(items.router, prefix="/api/v1")
 
 # 3. Authentication middleware (must be innermost to run first on request)
 app.add_middleware(AuthenticationMiddleware)
@@ -999,14 +1042,14 @@ async def list_items(
 ):
     """List items in a project. Returns empty list on any backend error so callers (e.g. home loader) do not get 500.
 
-Functional Requirements:
-- FR-APP-005
+    Functional Requirements:
+    - FR-APP-005
 
-User Stories:
-- US-ITEM-005
+    User Stories:
+    - US-ITEM-005
 
-Epics:
-- EPIC-003
+    Epics:
+    - EPIC-003
     """
     try:
         return await _list_items_impl(
@@ -1104,14 +1147,14 @@ async def get_item(
 ):
     """Get a specific item.
 
-Functional Requirements:
-- FR-APP-002
+    Functional Requirements:
+    - FR-APP-002
 
-User Stories:
-- US-ITEM-002
+    User Stories:
+    - US-ITEM-002
 
-Epics:
-- EPIC-003
+    Epics:
+    - EPIC-003
     """
     try:
         enforce_rate_limit(request, claims)
@@ -1149,14 +1192,14 @@ async def list_links(
 ):
     """List links, optionally filtered by project, source, or target, with support for excluding specific link types.
 
-Functional Requirements:
-- FR-APP-010
+    Functional Requirements:
+    - FR-APP-010
 
-User Stories:
-- US-LINK-005
+    User Stories:
+    - US-LINK-005
 
-Epics:
-- EPIC-004
+    Epics:
+    - EPIC-004
     """
     try:
         # Skip rate limiting for bulk operations
@@ -1337,14 +1380,14 @@ async def create_link(
 ):
     """Create a new link.
 
-Functional Requirements:
-- FR-APP-006
+    Functional Requirements:
+    - FR-APP-006
 
-User Stories:
-- US-LINK-001
+    User Stories:
+    - US-LINK-001
 
-Epics:
-- EPIC-004
+    Epics:
+    - EPIC-004
     """
     ensure_write_permission(claims, action="create")
     # Skip rate limiting for bulk operations
@@ -1383,14 +1426,14 @@ async def update_link(
 ):
     """Update link fields.
 
-Functional Requirements:
-- FR-APP-008
+    Functional Requirements:
+    - FR-APP-008
 
-User Stories:
-- US-LINK-003
+    User Stories:
+    - US-LINK-003
 
-Epics:
-- EPIC-004
+    Epics:
+    - EPIC-004
     """
     enforce_rate_limit(request, claims)
     ensure_write_permission(claims, action="update")
@@ -1404,7 +1447,7 @@ Epics:
     if request_body.link_type:
         link.link_type = request_body.link_type
     if request_body.metadata is not None:
-        setattr(link, "metadata", request_body.metadata)
+        link.metadata = request_body.metadata
 
     # Flush/refresh if available
     flush = getattr(db, "flush", None)
@@ -1432,14 +1475,14 @@ async def delete_link(
 ):
     """Delete link.
 
-Functional Requirements:
-- FR-APP-009
+    Functional Requirements:
+    - FR-APP-009
 
-User Stories:
-- US-LINK-004
+    User Stories:
+    - US-LINK-004
 
-Epics:
-- EPIC-004
+    Epics:
+    - EPIC-004
     """
     enforce_rate_limit(request, claims)
     ensure_write_permission(claims, action="delete")
@@ -1679,14 +1722,14 @@ async def create_item_endpoint(
 ):
     """Create an item with simple permission checks.
 
-Functional Requirements:
-- FR-APP-001
+    Functional Requirements:
+    - FR-APP-001
 
-User Stories:
-- US-ITEM-001
+    User Stories:
+    - US-ITEM-001
 
-Epics:
-- EPIC-003
+    Epics:
+    - EPIC-003
     """
     ensure_write_permission(claims, action="create")
     # Skip rate limiting for bulk operations
@@ -1740,14 +1783,14 @@ async def update_item_endpoint(
 ):
     """Update an item with optimistic locking (if expected_version provided).
 
-Functional Requirements:
-- FR-APP-003
+    Functional Requirements:
+    - FR-APP-003
 
-User Stories:
-- US-ITEM-003
+    User Stories:
+    - US-ITEM-003
 
-Epics:
-- EPIC-003
+    Epics:
+    - EPIC-003
     """
     ensure_write_permission(claims, action="update")
     enforce_rate_limit(request, claims)
@@ -1801,14 +1844,14 @@ async def delete_item_endpoint(
 ):
     """Delete an item (permission-gated).
 
-Functional Requirements:
-- FR-APP-004
+    Functional Requirements:
+    - FR-APP-004
 
-User Stories:
-- US-ITEM-004
+    User Stories:
+    - US-ITEM-004
 
-Epics:
-- EPIC-003
+    Epics:
+    - EPIC-003
     """
     ensure_write_permission(claims, action="delete")
     enforce_rate_limit(request, claims)
@@ -8640,14 +8683,14 @@ async def link_github_app_installation(
 ):
     """Link a GitHub App installation to an account.
 
-Functional Requirements:
-- FR-DISC-001
+    Functional Requirements:
+    - FR-DISC-001
 
-User Stories:
-- US-INT-001
+    User Stories:
+    - US-INT-001
 
-Epics:
-- EPIC-001
+    Epics:
+    - EPIC-001
     """
     from tracertm.repositories.account_repository import AccountRepository
     from tracertm.repositories.github_app_repository import GitHubAppInstallationRepository

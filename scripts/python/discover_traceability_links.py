@@ -21,7 +21,7 @@ import json
 import re
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -85,7 +85,12 @@ class TraceLinkDiscoverer:
         "test": re.compile(r"tests?/.*/test_([a-z_]+)\.py$"),
     }
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root: Path) -> None:
+        """Initialize the discoverer with a project root path.
+
+        Args:
+            project_root: The root directory of the project to scan.
+        """
         self.project_root = project_root
         self.links: list[TraceLink] = []
         self.doc_refs: dict[str, DocReference] = {}
@@ -279,13 +284,13 @@ class TraceLinkDiscoverer:
                             break
 
                         # Extract Epic references (EPIC-NNN format)
-                        epic_match = re.search(r'\b(EPIC-\d+)\b', next_line)
+                        epic_match = re.search(r"\b(EPIC-\d+)\b", next_line)
                         if epic_match:
                             self._create_link(
                                 from_id=current_fr,
-                                from_type="FR",
+                                _from_type="FR",
                                 to_id=epic_match.group(1),
-                                to_type="Epic",
+                                _to_type="Epic",
                                 link_type="traces_to",
                                 confidence="high",
                                 source_file=str(
@@ -295,13 +300,13 @@ class TraceLinkDiscoverer:
                             )
 
                         # Extract User Story references
-                        us_match = re.search(r'\b(US-[A-Z]+-\d+)\b', next_line)
+                        us_match = re.search(r"\b(US-[A-Z]+-\d+)\b", next_line)
                         if us_match:
                             self._create_link(
                                 from_id=current_fr,
-                                from_type="FR",
+                                _from_type="FR",
                                 to_id=us_match.group(1),
-                                to_type="User Story",
+                                _to_type="User Story",
                                 link_type="traces_to",
                                 confidence="high",
                                 source_file=str(
@@ -323,7 +328,7 @@ class TraceLinkDiscoverer:
                             file_ref, start_line, end_line = file_match.groups()
                             self._create_code_link(
                                 from_id=current_fr,
-                                from_type="FR",
+                                _from_type="FR",
                                 to_file=file_ref,
                                 to_line_start=int(start_line),
                                 to_line_end=int(end_line),
@@ -348,7 +353,7 @@ class TraceLinkDiscoverer:
                             test_file, test_name = test_match.groups()
                             self._create_test_link(
                                 from_id=current_fr,
-                                from_type="FR",
+                                _from_type="FR",
                                 to_file=test_file,
                                 to_test=test_name,
                                 link_type="tested_by",
@@ -378,7 +383,7 @@ class TraceLinkDiscoverer:
 
             for line_num, line in enumerate(lines, start=1):
                 # Skip non-comment/docstring lines
-                if not ("\"\"\"" in line or "#" in line):
+                if not ('"""' in line or "#" in line):
                     continue
 
                 # Check for FR/ADR/Epic references in comments
@@ -391,7 +396,7 @@ class TraceLinkDiscoverer:
                         if code_ref:
                             self._create_doc_to_code_link(
                                 from_id=doc_id,
-                                from_type=doc_type.replace("_", " ").title(),
+                                _from_type=doc_type.replace("_", " ").title(),
                                 to_code_ref=code_ref,
                                 link_type="implements",
                                 confidence="medium",
@@ -410,7 +415,7 @@ class TraceLinkDiscoverer:
         """Find the code reference that contains the given line number."""
         rel_path = str(file_path.relative_to(self.project_root))
 
-        for key, ref in self.code_refs.items():
+        for ref in self.code_refs.values():
             if ref.file == rel_path and ref.line_start <= line_num <= (
                 ref.line_end or ref.line_start
             ):
@@ -429,7 +434,7 @@ class TraceLinkDiscoverer:
             test_name = test_file.stem.replace("test_", "")
 
             # Find corresponding source file
-            for code_key, code_ref in self.code_refs.items():
+            for code_ref in self.code_refs.values():
                 if test_name in code_ref.file:
                     # Create tested_by link
                     link = TraceLink(
@@ -446,7 +451,7 @@ class TraceLinkDiscoverer:
                         confidence="medium",
                         auto_discovered=True,
                         metadata={
-                            "created_at": datetime.now(timezone.utc).isoformat(),
+                            "created_at": datetime.now(UTC).isoformat(),
                             "created_by": "auto_discovery",
                             "match_pattern": "file_name_match",
                         },
@@ -456,14 +461,26 @@ class TraceLinkDiscoverer:
     def _create_link(
         self,
         from_id: str,
-        from_type: str,
+        _from_type: str,
         to_id: str,
-        to_type: str,
+        _to_type: str,
         link_type: str,
         confidence: str,
         source_file: str,
         source_line: int,
     ) -> None:
+        """Create a link between two documentation references.
+
+        Args:
+            from_id: The source document ID.
+            _from_type: The source document type (unused, kept for API compatibility).
+            to_id: The target document ID.
+            _to_type: The target document type (unused, kept for API compatibility).
+            link_type: Type of link (traces_to, implements, etc.).
+            confidence: Confidence level (high, medium, low).
+            source_file: File where the link was discovered.
+            source_line: Line number where the link was discovered.
+        """
         """Create a link between two documentation references."""
         # Find from_ref
         from_ref = None
@@ -488,7 +505,7 @@ class TraceLinkDiscoverer:
                 confidence=confidence,
                 auto_discovered=True,
                 metadata={
-                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_at": datetime.now(UTC).isoformat(),
                     "created_by": "auto_discovery",
                     "source_line": source_line,
                     "source_file": source_file,
@@ -499,7 +516,7 @@ class TraceLinkDiscoverer:
     def _create_code_link(
         self,
         from_id: str,
-        from_type: str,
+        _from_type: str,
         to_file: str,
         to_line_start: int,
         to_line_end: int,
@@ -534,7 +551,7 @@ class TraceLinkDiscoverer:
                 confidence=confidence,
                 auto_discovered=True,
                 metadata={
-                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_at": datetime.now(UTC).isoformat(),
                     "created_by": "auto_discovery",
                     "source_line": source_line,
                     "source_file": source_file,
@@ -545,7 +562,7 @@ class TraceLinkDiscoverer:
     def _create_test_link(
         self,
         from_id: str,
-        from_type: str,
+        _from_type: str,
         to_file: str,
         to_test: str,
         link_type: str,
@@ -578,7 +595,7 @@ class TraceLinkDiscoverer:
                 confidence=confidence,
                 auto_discovered=True,
                 metadata={
-                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_at": datetime.now(UTC).isoformat(),
                     "created_by": "auto_discovery",
                     "source_line": source_line,
                     "source_file": source_file,
@@ -589,7 +606,7 @@ class TraceLinkDiscoverer:
     def _create_doc_to_code_link(
         self,
         from_id: str,
-        from_type: str,
+        _from_type: str,
         to_code_ref: CodeReference,
         link_type: str,
         confidence: str,
@@ -613,7 +630,7 @@ class TraceLinkDiscoverer:
                 confidence=confidence,
                 auto_discovered=True,
                 metadata={
-                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_at": datetime.now(UTC).isoformat(),
                     "created_by": "auto_discovery",
                     "source_line": source_line,
                     "source_file": source_file,
@@ -634,33 +651,31 @@ class TraceLinkDiscoverer:
                     "title": ref.title,
                     "status": ref.status,
                 }
-            else:
-                result: dict[str, Any] = {
-                    "type": ref.type,
-                    "name": ref.name,
-                    "file": ref.file,
-                    "line_start": ref.line_start,
-                    "language": ref.language,
-                }
-                if ref.line_end:
-                    result["line_end"] = ref.line_end
-                if ref.module:
-                    result["module"] = ref.module
-                return result
+            result: dict[str, Any] = {
+                "type": ref.type,
+                "name": ref.name,
+                "file": ref.file,
+                "line_start": ref.line_start,
+                "language": ref.language,
+            }
+            if ref.line_end:
+                result["line_end"] = ref.line_end
+            if ref.module:
+                result["module"] = ref.module
+            return result
 
-        links_json = []
-        for link in self.links:
-            links_json.append(
-                {
-                    "id": link.id,
-                    "from": ref_to_dict(link.from_ref),
-                    "to": ref_to_dict(link.to_ref),
-                    "linkType": link.link_type,
-                    "confidence": link.confidence,
-                    "auto_discovered": link.auto_discovered,
-                    "metadata": link.metadata,
-                }
-            )
+        links_json = [
+            {
+                "id": link.id,
+                "from": ref_to_dict(link.from_ref),
+                "to": ref_to_dict(link.to_ref),
+                "linkType": link.link_type,
+                "confidence": link.confidence,
+                "auto_discovered": link.auto_discovered,
+                "metadata": link.metadata,
+            }
+            for link in self.links
+        ]
 
         # Calculate statistics
         link_types = {}
@@ -680,7 +695,7 @@ class TraceLinkDiscoverer:
                 "id": "tracertm",
                 "description": "Requirements Traceability Matrix System",
             },
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "links": links_json,
             "statistics": {
                 "total_links": len(self.links),

@@ -26,7 +26,13 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from tests.test_constants import HTTP_CREATED, HTTP_NO_CONTENT, HTTP_NOT_FOUND, HTTP_OK, HTTP_UNPROCESSABLE_ENTITY
+from tests.test_constants import (
+    HTTP_CREATED,
+    HTTP_NO_CONTENT,
+    HTTP_NOT_FOUND,
+    HTTP_OK,
+    HTTP_UNPROCESSABLE_ENTITY,
+)
 from tracertm.api.deps import get_db
 from tracertm.api.main import app
 
@@ -201,8 +207,11 @@ def scenario_payload() -> None:
 class TestADREndpoints:
     """Test suite for ADR endpoints."""
 
+    # Traces to: FR-SPEC-001, FR-SPEC-002
+
     def test_create_adr_success(self, client: Any, auth_headers: Any, adr_payload: Any) -> None:
         """Test successful ADR creation."""
+        # Traces to: FR-RTM-001
         response = client.post("/api/v1/specifications/adrs", json=adr_payload, headers=auth_headers)
 
         assert response.status_code == HTTP_CREATED
@@ -284,6 +293,7 @@ class TestADREndpoints:
 
     def test_verify_adr_compliance(self, client: Any, auth_headers: Any, adr_payload: Any) -> None:
         """Test ADR compliance verification."""
+        # Traces to: FR-SPEC-001, FR-SPEC-002, FR-SPEC-003
         # Create ADR first
         create_response = client.post("/api/v1/specifications/adrs", json=adr_payload, headers=auth_headers)
         adr_id = create_response.json()["id"]
@@ -308,8 +318,11 @@ class TestADREndpoints:
 class TestContractEndpoints:
     """Test suite for Contract endpoints."""
 
+    # Traces to: FR-SPEC-001, FR-SPEC-002, FR-SPEC-003, FR-INTEG-003 (API contracts)
+
     def test_create_contract_success(self, client: Any, auth_headers: Any, contract_payload: Any) -> None:
         """Test successful contract creation."""
+        # Traces to: FR-RTM-001
         response = client.post("/api/v1/specifications/contracts", json=contract_payload, headers=auth_headers)
 
         assert response.status_code == HTTP_CREATED
@@ -344,6 +357,7 @@ class TestContractEndpoints:
 
     def test_verify_contract_compliance(self, client: Any, auth_headers: Any, contract_payload: Any) -> None:
         """Test contract compliance verification."""
+        # Traces to: FR-SPEC-001, FR-SPEC-002, FR-SPEC-003
         # Create contract first
         create_response = client.post("/api/v1/specifications/contracts", json=contract_payload, headers=auth_headers)
         contract_id = create_response.json()["id"]
@@ -365,8 +379,11 @@ class TestContractEndpoints:
 class TestFeatureEndpoints:
     """Test suite for Feature endpoints."""
 
+    # Traces to: FR-RTM-001, FR-RTM-002 (hierarchy)
+
     def test_create_feature_success(self, client: Any, auth_headers: Any, feature_payload: Any) -> None:
         """Test successful feature creation."""
+        # Traces to: FR-RTM-001
         response = client.post("/api/v1/specifications/features", json=feature_payload, headers=auth_headers)
 
         assert response.status_code == HTTP_CREATED
@@ -407,6 +424,8 @@ class TestFeatureEndpoints:
 
 class TestScenarioEndpoints:
     """Test suite for Scenario endpoints."""
+
+    # Traces to: FR-RTM-001, FR-RTM-002
 
     def test_create_scenario_success(
         self, client: Any, auth_headers: Any, feature_payload: Any, scenario_payload: Any
@@ -483,6 +502,8 @@ class TestScenarioEndpoints:
 class TestProjectLevelEndpoints:
     """Test suite for project-level specification endpoints."""
 
+    # Traces to: FR-SPEC-001, FR-SPEC-002, FR-SPEC-003 (compliance dashboard)
+
     def test_get_specifications_summary(
         self,
         client: Any,
@@ -516,6 +537,8 @@ class TestProjectLevelEndpoints:
 
 class TestErrorHandling:
     """Test suite for error handling."""
+
+    # Traces to: FR-RTM-001 (validation), FR-SPEC-001
 
     def test_missing_required_field(self, client: Any, auth_headers: Any, adr_payload: Any) -> None:
         """Test validation error for missing required field."""

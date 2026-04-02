@@ -19,7 +19,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy import create_engine
 
-from tests.test_constants import COUNT_FIVE, COUNT_FOUR, COUNT_TEN, COUNT_THREE, COUNT_TWO, HTTP_INTERNAL_SERVER_ERROR
+from tests.test_constants import (
+    COUNT_FIVE,
+    COUNT_FOUR,
+    COUNT_TEN,
+    COUNT_THREE,
+    COUNT_TWO,
+    HTTP_INTERNAL_SERVER_ERROR,
+)
 from tracertm.models.base import Base
 from tracertm.storage.conflict_resolver import ConflictStrategy
 from tracertm.storage.sync_engine import (
@@ -56,8 +63,7 @@ def db_connection() -> None:
     """In-memory SQLite database for testing."""
     engine = create_engine("sqlite:///:memory:")
     Base.metadata.create_all(engine)
-    connection = MockDatabaseConnection(engine=engine)
-    yield connection
+    yield MockDatabaseConnection(engine=engine)
     engine.dispose()
 
 

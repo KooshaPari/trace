@@ -343,6 +343,8 @@ extend-exclude = [
     "ARCHIVE/**",
     "cairosvg",
     "default",
+    "temp",
+    "temp/**",
 ]
 force-exclude = true
 
@@ -536,6 +538,7 @@ max-statements = 50
     "RUF034",
     "RUF043",
     "RUF059",
+    "RUF069",
     "ERA001",
     "INP001",
     "G004",
@@ -563,6 +566,7 @@ max-statements = 50
     "BLE001",
     "TRY300",
     "RUF029",
+    "RUF069",
     "INP001",
     "ASYNC109",
     "PLC0415",
@@ -823,6 +827,10 @@ max-statements = 50
     "FBT001",
     "FBT002",
     "FBT003",
+    "S404",
+    "S607",
+    "C901",
+    "RUF067",
 ]
 "src/tracertm/cli/**/*.py" = [
     "FBT001",
@@ -1116,6 +1124,7 @@ max-statements = 50
     "S606",
     "S608",
     "S404",
+    "T201",
 ]
 "scripts/python/ENHANCEMENT_API_ENDPOINTS.py" = [
     "N999",

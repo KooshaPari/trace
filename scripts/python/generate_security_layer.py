@@ -96,7 +96,7 @@ async def create_item(
     created_items[item_type].append((item_id, title))
 
     if stats[item_type] % 10 == 0:
-        pass
+        print(f"Created {stats[item_type]} {item_type} items...")
 
     return item_id
 

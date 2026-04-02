@@ -46,6 +46,8 @@ def mcp_server() -> None:
 class TestWorkflow_ProjectCreation:
     """Test project creation workflow."""
 
+    # Traces to: FR-RTM-001 (requirement registration), FR-TENANT-001 (organization isolation)
+
     def test_create_project_tool_exists(self, mcp_server: Any) -> None:
         """Test that create_project tool exists."""
         assert "create_project" in {t.name for t in mcp_server._tools.values()}
@@ -80,6 +82,8 @@ class TestWorkflow_ProjectCreation:
 
 class TestWorkflow_ItemManagement:
     """Test item management workflow."""
+
+    # Traces to: FR-RTM-001, FR-RTM-002, FR-RTM-004
 
     def test_create_item_tool_exists(self, mcp_server: Any) -> None:
         """Test that create_item tool exists."""
@@ -139,6 +143,8 @@ class TestWorkflow_ItemManagement:
 class TestWorkflow_LinkManagement:
     """Test link management workflow."""
 
+    # Traces to: FR-LINK-003, FR-LINK-004
+
     def test_create_link_tool_exists(self, mcp_server: Any) -> None:
         """Test that create_link tool exists."""
         assert "create_link" in {t.name for t in mcp_server._tools.values()}
@@ -184,6 +190,8 @@ class TestWorkflow_LinkManagement:
 class TestWorkflow_TraceabilityAnalysis:
     """Test traceability analysis workflow."""
 
+    # Traces to: FR-SPEC-001, FR-SPEC-002, FR-SPEC-003, FR-TEST-003, FR-TEST-004
+
     def test_gap_analysis_tool_exists(self, mcp_server: Any) -> None:
         """Test that trace_gap_analysis tool exists."""
         assert "trace_gap_analysis" in {t.name for t in mcp_server._tools.values()}
@@ -227,6 +235,8 @@ class TestWorkflow_TraceabilityAnalysis:
 class TestWorkflow_GraphAnalysis:
     """Test graph analysis workflow."""
 
+    # Traces to: FR-GRAPH-001, FR-GRAPH-002, FR-GRAPH-003
+
     def test_cycle_analysis_tool_exists(self, mcp_server: Any) -> None:
         """Test that analyze_cycles tool exists."""
         assert "analyze_cycles" in {t.name for t in mcp_server._tools.values()}
@@ -262,6 +272,8 @@ class TestWorkflow_GraphAnalysis:
 
 class TestWorkflow_SpecificationManagement:
     """Test specification management workflow."""
+
+    # Traces to: FR-SPEC-001, FR-SPEC-002, FR-SPEC-003
 
     def test_create_spec_tool_exists(self, mcp_server: Any) -> None:
         """Test that create_specification tool exists."""

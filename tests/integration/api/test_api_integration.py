@@ -146,8 +146,7 @@ def fastapi_test_client(test_db_engine: Any, _test_project: Any) -> None:
                 await async_engine.dispose()
 
     app.dependency_overrides[get_db] = override_get_db
-    client = TestClient(app)
-    yield client
+    yield TestClient(app)
     app.dependency_overrides.clear()
 
 
