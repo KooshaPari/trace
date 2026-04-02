@@ -1,14 +1,6 @@
 """Parameterized MCP tools organized by domain."""
 
-from ._lazy_stub import (
-    agent_manage,
-    benchmark_manage,
-    chaos_manage,
-    design_manage,
-    progress_manage,
-    saved_query_manage,
-    tui_manage,
-)
+from .agent import agent_manage, progress_manage
 from .config import config_manage
 from .database import database_manage
 from .graph import graph_analyze
@@ -16,10 +8,12 @@ from .io_operations import export_manage, import_manage, ingestion_manage
 from .item import item_manage
 from .link import link_manage
 from .project import project_manage
-from .query_test import test_manage
+from .query_test import saved_query_manage, test_manage
 from .specification import specification_manage
 from .storage import backup_manage, file_watch_manage, sync_manage
+from .system import benchmark_manage, chaos_manage
 from .trace import quality_analyze, trace_analyze
+from .ui import design_manage, tui_manage
 
 saved_queries_manage = saved_query_manage
 
