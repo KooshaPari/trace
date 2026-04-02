@@ -1,46 +1,107 @@
-## Summary
+## Description
 
-<!-- Describe what this PR does and why it's needed -->
-<!-- What problem does it solve? What feature does it add? -->
+<!-- Brief description of the changes -->
 
-## Changes
+Closes #(issue number)
 
-<!-- Bullet list of key changes -->
+## Type of Change
 
--
--
--
+<!-- Mark relevant items with [x] -->
+
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📚 Documentation update
+- [ ] ⚡ Performance improvement
+- [ ] ♻️ Code refactoring
+- [ ] 🔧 Configuration change
+- [ ] 🧪 Test update
+
+## Changes Made
+
+<!-- List the specific changes made in this PR -->
+
+- 
+- 
+- 
 
 ## Testing
 
-<!-- How was this validated? -->
-<!-- What manual testing was done? What automated tests were added? -->
+<!-- Describe the testing you've done -->
 
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
-- [ ] Manual testing completed
-- [ ] Test coverage maintained or improved
+- [ ] E2E tests added/updated
+- [ ] Manual testing performed
+- [ ] All tests pass locally (`npm test`)
 
-## Screenshots (if applicable)
+### Test Results
 
-<!-- Add screenshots for UI changes -->
+<!-- Paste test output if relevant -->
+```
+```
 
-## Checklist
+## Quality Checks
 
-- [ ] Code builds successfully (`bun run type-check`)
-- [ ] Linting passes (`bun run lint:fix`)
-- [ ] Tests pass (`bun run test:run`)
-- [ ] No console errors in development
-- [ ] Documentation updated (if needed)
-- [ ] Commit message is clear and descriptive
-- [ ] Related issues/tasks linked
+<!-- Confirm all quality gates pass -->
 
-## Related Issues
+- [ ] Code follows project style guidelines (eslint, prettier)
+- [ ] Self-review completed - I have reviewed my own code
+- [ ] No new warnings or errors introduced
+- [ ] Documentation updated (if applicable)
+- [ ] Comments added for complex logic
+- [ ] No hardcoded secrets or credentials
+- [ ] No performance regressions introduced
 
-<!-- Link related issues/tasks: Closes #123, Related to #456 -->
+## Security
 
-Closes #
+<!-- For security-sensitive changes -->
 
-## Migration Notes (if applicable)
+- [ ] No sensitive data exposed
+- [ ] Input validation implemented
+- [ ] Authentication/authorization checks in place
+- [ ] Dependencies updated and audited
 
-<!-- Document any database migrations, env changes, or breaking changes -->
+## Documentation
+
+<!-- Check if documentation needs updates -->
+
+- [ ] README.md updated (if user-facing changes)
+- [ ] AGENTS.md updated (if agent behavior affected)
+- [ ] API documentation updated (if applicable)
+- [ ] Architecture Decision Record created (if significant change)
+
+## AgilePlus Tracking
+
+<!-- Link to AgilePlus spec if applicable -->
+
+- [ ] AgilePlus spec linked: `specs/XX-XXXX/`
+- [ ] Work package status updated
+- [ ] FR traceability maintained (FR-XXX-NNN comments in code)
+
+## Screenshots / Visuals
+
+<!-- If applicable, add screenshots, diagrams, or recordings -->
+
+## Deployment Notes
+
+<!-- Any special deployment considerations -->
+
+- Database migrations required: No
+- Environment variables added: None
+- Feature flags required: None
+- Breaking changes for API consumers: None
+
+## Reviewer Notes
+
+<!-- Any specific areas you'd like reviewers to focus on -->
+
+---
+
+**Checklist for Reviewers:**
+- [ ] Code quality meets standards
+- [ ] Tests are comprehensive and passing
+- [ ] Documentation is clear
+- [ ] Security considerations addressed
+- [ ] Performance impact assessed
+- [ ] AgilePlus compliance verified
