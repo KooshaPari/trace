@@ -8,7 +8,13 @@ import pytest_asyncio
 from fastapi import HTTPException
 from httpx import ASGITransport, AsyncClient
 
-from tests.test_constants import COUNT_THREE, COUNT_TWO, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, HTTP_OK
+from tests.test_constants import (
+    COUNT_THREE,
+    COUNT_TWO,
+    HTTP_INTERNAL_SERVER_ERROR,
+    HTTP_NOT_FOUND,
+    HTTP_OK,
+)
 from tracertm.api import main
 
 
@@ -118,6 +124,7 @@ async def client() -> None:
 
 @pytest.mark.asyncio
 async def test_health_check(client: AsyncClient) -> None:
+    # Traces to: FR-OBS-001 (Prometheus metrics health check)
     response = await client.get("/health")
     assert response.status_code == HTTP_OK
     payload = response.json()
@@ -127,6 +134,7 @@ async def test_health_check(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_list_items_returns_paginated_subset(client: AsyncClient) -> None:
+    # Traces to: FR-RTM-004 (requirement search & filtering), FR-TENANT-001 (organization isolation)
     response = await client.get("/api/v1/items", params={"project_id": "p1", "skip": 1, "limit": 1})
     assert response.status_code == HTTP_OK
     payload = response.json()
@@ -154,6 +162,7 @@ async def test_get_item_not_found_returns_404(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_list_links(client: AsyncClient) -> None:
+    # Traces to: FR-LINK-003 (manual code linking), FR-LINK-004 (code link status tracking)
     response = await client.get("/api/v1/links", params={"project_id": "p1"})
     assert response.status_code == HTTP_OK
     payload = response.json()
@@ -164,6 +173,7 @@ async def test_list_links(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_get_impact_analysis(client: AsyncClient) -> None:
+    # Traces to: FR-GRAPH-002 (impact analysis)
     response = await client.get("/api/v1/analysis/impact/item-1", params={"project_id": "p1"})
     assert response.status_code == HTTP_OK
     payload = response.json()
@@ -175,6 +185,7 @@ async def test_get_impact_analysis(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_detect_cycles(client: AsyncClient) -> None:
+    # Traces to: FR-GRAPH-001 (requirement dependency DAG - cycle detection)
     response = await client.get("/api/v1/analysis/cycles/p1")
     assert response.status_code == HTTP_OK
     payload = response.json()
@@ -186,6 +197,7 @@ async def test_detect_cycles(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_find_shortest_path(client: AsyncClient) -> None:
+    # Traces to: FR-GRAPH-003 (critical path analysis)
     response = await client.get(
         "/api/v1/analysis/shortest-path",
         params={"project_id": "p1", "source_id": "a", "target_id": "b"},

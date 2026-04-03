@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text
@@ -14,6 +13,8 @@ from tracertm.models.base import Base, TimestampMixin
 from tracertm.models.types import JSONType
 
 if TYPE_CHECKING:
+    from datetime import datetime
+
     from tracertm.models.link import Link
 
 

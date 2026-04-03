@@ -3,17 +3,23 @@
 Displays DAG steps with status (pending/running/passed/failed/skipped) and duration.
 """
 
+import json
 from typing import Any
 
 try:
+    import yaml
     from textual.widgets import DataTable
+
+    from tracertm.tui.quality_root import DAG_CONFIG, LAST_RUN_JSON, LOG_DIR
 
     TEXTUAL_AVAILABLE = True
 except ImportError:
     TEXTUAL_AVAILABLE = False
     DataTable = object
+    yaml = None
+    json = None
 
-from tracertm.tui.quality_root import DAG_CONFIG, LAST_RUN_JSON, LOG_DIR
+_SECONDS_PER_MINUTE = 60
 
 
 def load_step_status() -> tuple[list[str], list[tuple[str, str, str]]]:
@@ -21,18 +27,15 @@ def load_step_status() -> tuple[list[str], list[tuple[str, str, str]]]:
 
     Returns (step_names, rows) where rows are (display, status, duration).
     """
-    import json
-    import yaml
-
     steps: dict[str, dict] = {}
-    if DAG_CONFIG.exists():
+    if DAG_CONFIG.exists() and yaml is not None:
         data = yaml.safe_load(DAG_CONFIG.read_text())
         steps = data.get("steps", {})
     step_order = list(steps.keys()) if steps else []
 
     results: dict[str, int | str] = {}
     step_details: dict[str, dict] = {}
-    if LAST_RUN_JSON.exists():
+    if LAST_RUN_JSON.exists() and json is not None:
         try:
             data = json.loads(LAST_RUN_JSON.read_text())
             results = data.get("steps", {})
@@ -43,7 +46,7 @@ def load_step_status() -> tuple[list[str], list[tuple[str, str, str]]]:
     def _fmt_duration(sec: float) -> str:
         if sec <= 0:
             return "-"
-        return f"{sec:.1f}s" if sec < 60 else f"{sec / 60:.1f}m"
+        return f"{sec:.1f}s" if sec < _SECONDS_PER_MINUTE else f"{sec / _SECONDS_PER_MINUTE:.1f}m"
 
     rows: list[tuple[str, str, str]] = []
     for name in step_order:
@@ -89,10 +92,12 @@ if TEXTUAL_AVAILABLE:
         """DataTable showing quality DAG step status."""
 
         def __init__(self, *args: Any, **kwargs: Any) -> None:
+            """Initialize the step status table."""
             super().__init__(*args, **kwargs)
             self._step_names: list[str] = []
 
         def on_mount(self) -> None:
+            """Handle mount event to set up columns and load data."""
             self.add_columns("Step", "Status", "Duration")
             self.refresh_steps()
 

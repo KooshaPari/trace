@@ -116,12 +116,11 @@ async def postgres_engine() -> None:
 @pytest_asyncio.fixture(scope="session")
 async def postgres_sessionmaker(postgres_engine: Any) -> None:
     """Create session factory."""
-    sessionmaker = async_sessionmaker(
+    yield async_sessionmaker(
         postgres_engine,
         class_=AsyncSession,
         expire_on_commit=False,
     )
-    yield sessionmaker
 
 
 @pytest_asyncio.fixture
@@ -281,8 +280,7 @@ async def nats_client() -> AsyncGenerator[NATSClient, None]:
 @pytest_asyncio.fixture
 async def nats_jetstream(nats_client: Any) -> JetStreamContext:
     """Provide JetStream context for tests."""
-    js = nats_client.jetstream()
-    yield js
+    yield nats_client.jetstream()
 
 
 @pytest_asyncio.fixture
@@ -327,8 +325,7 @@ async def temporal_worker(temporal_env: Any) -> None:
 @pytest_asyncio.fixture
 async def event_publisher(nats_client: Any) -> AgentEventPublisher:
     """Provide configured event publisher."""
-    publisher = AgentEventPublisher(nats_client)
-    yield publisher
+    yield AgentEventPublisher(nats_client)
 
 
 @pytest_asyncio.fixture

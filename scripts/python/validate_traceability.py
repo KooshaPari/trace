@@ -28,9 +28,9 @@ from pathlib import Path
 from typing import Any
 
 # Pattern matchers
-FR_ID_PATTERN = re.compile(r'(FR-[A-Z]+-\d{3})')
-EPIC_ID_PATTERN = re.compile(r'(EPIC-\d{3})')
-ADR_ID_PATTERN = re.compile(r'(ADR-\d{4})')
+FR_ID_PATTERN = re.compile(r"(FR-[A-Z]+-\d{3})")
+EPIC_ID_PATTERN = re.compile(r"(EPIC-\d{3})")
+ADR_ID_PATTERN = re.compile(r"(ADR-\d{4})")
 
 
 @dataclass
@@ -45,7 +45,14 @@ class ValidationResult:
 class TraceabilityValidator:
     """Validate traceability integrity."""
 
-    def __init__(self, project_root: Path, verbose: bool = False, check_code: bool = False):
+    def __init__(self, project_root: Path, verbose: bool = False, check_code: bool = False) -> None:
+        """Initialize the traceability validator.
+
+        Args:
+            project_root: Root directory of the project.
+            verbose: Enable verbose output.
+            check_code: Also check code references.
+        """
         self.project_root = project_root
         self.verbose = verbose
         self.check_code = check_code
@@ -75,7 +82,7 @@ class TraceabilityValidator:
 
     def load_json(self, path: Path) -> dict[str, Any]:
         """Load JSON file."""
-        with path.open("r") as f:
+        with path.open("r", encoding="utf-8") as f:
             return json.load(f)
 
     def load_text(self, path: Path) -> str:
@@ -207,7 +214,7 @@ class TraceabilityValidator:
         # Extract Epic IDs from FRs
         epic_ids_in_frs: set[str] = set()
         for fr in fr_status["functional_requirements"].values():
-            if "epic" in fr and fr["epic"]:
+            if fr.get("epic"):
                 epic_ids_in_frs.add(fr["epic"])
 
         # Load PRD

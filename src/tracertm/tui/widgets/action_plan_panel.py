@@ -9,12 +9,16 @@ from pathlib import Path
 from typing import Any
 
 try:
+    import yaml
     from textual.widgets import Static
+
+    from tracertm.tui.quality_root import DAG_CONFIG, LOG_DIR, ROOT
 
     TEXTUAL_AVAILABLE = True
 except ImportError:
     TEXTUAL_AVAILABLE = False
     Static = object
+    yaml = None
 
 FILE_LINE_PATTERNS = [
     re.compile(r"^(.+?\.(?:go|py|ts|tsx|js|jsx|mjs|cjs)):(\d+):(\d+):\s*(.+)$"),
@@ -24,7 +28,8 @@ FILE_LINE_PATTERNS = [
 ]
 GOFMT_FILE = re.compile(r"^\s*(.+\.go)\s*$")
 
-from tracertm.tui.quality_root import DAG_CONFIG, LOG_DIR, ROOT
+_MAX_MESSAGE_GROUP_COUNT = 4
+_MAX_MESSAGE_DISPLAY_LENGTH = 60
 
 SPLIT_STEPS_FALLBACK = [
     ("naming", "Naming", "lint", "Python"),
@@ -44,13 +49,12 @@ SPLIT_STEPS_FALLBACK = [
 
 def _load_split_steps() -> list[tuple[str, str, str, str]]:
     """Derive SPLIT_STEPS from quality-dag.yaml when available."""
-    if not DAG_CONFIG.exists():
+    if not DAG_CONFIG.exists() or yaml is None:
         return SPLIT_STEPS_FALLBACK
     try:
-        import yaml
         data = yaml.safe_load(DAG_CONFIG.read_text())
         steps = data.get("steps", {})
-    except Exception:
+    except (yaml.YAMLError, OSError):
         return SPLIT_STEPS_FALLBACK
     if not steps:
         return SPLIT_STEPS_FALLBACK
@@ -87,8 +91,8 @@ def _normalize_path(raw: str, cwd: Path) -> str:
 
 def _extract_by_file(text: str, cwd: Path, suite: str) -> dict[str, list[tuple[int | None, str]]]:
     by_file: dict[str, list[tuple[int | None, str]]] = defaultdict(list)
-    for line in text.splitlines():
-        line = line.strip()
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
         if not line or line.startswith(("make[", "$ ")) or "*** [" in line:
             continue
         for pat in FILE_LINE_PATTERNS:
@@ -96,7 +100,7 @@ def _extract_by_file(text: str, cwd: Path, suite: str) -> dict[str, list[tuple[i
             if m:
                 g = m.groups()
                 fp = _normalize_path(g[0], cwd)
-                msg = (g[3] if len(g) == 4 else g[2]).strip()
+                msg = (g[3] if len(g) == _MAX_MESSAGE_GROUP_COUNT else g[2]).strip()
                 by_file[fp].append((int(g[1]), msg))
                 break
         else:
@@ -133,7 +137,7 @@ def load_action_plan() -> str:
         parts = []
         for step_name, line_no, msg in entries:
             loc = f":{line_no}" if line_no else ""
-            suffix = "..." if len(msg) > 60 else ""
+            suffix = "..." if len(msg) > _MAX_MESSAGE_DISPLAY_LENGTH else ""
             parts.append(f"{step_name}{loc}: {msg[:60]}{suffix}")
         lines.append(f"[bold]{fp}[/]\n  " + "\n  ".join(parts))
     return "\n\n".join(lines)
@@ -145,9 +149,11 @@ if TEXTUAL_AVAILABLE:
         """Static widget showing by-file issues from quality logs."""
 
         def __init__(self, *args: Any, **kwargs: Any) -> None:
+            """Initialize the action plan panel."""
             super().__init__("", *args, **kwargs)
 
         def on_mount(self) -> None:
+            """Handle mount event to refresh content."""
             self.refresh_content()
 
         def refresh_content(self) -> None:

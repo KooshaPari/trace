@@ -7,7 +7,7 @@ They are durable and can run for long periods, surviving server restarts.
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Any, cast
+from typing import Any
 
 from temporalio import common as temporalio_common
 from temporalio import workflow
@@ -341,7 +341,7 @@ class AgentRunWorkflow:
                 ),
             )
             messages = result.get("messages_json", messages)
-            if result.get("done", False):
+            if result.get("done"):
                 workflow.logger.info("Agent run completed at turn %s", turn + 1)
                 return result
         workflow.logger.info("Agent run hit max_turns")

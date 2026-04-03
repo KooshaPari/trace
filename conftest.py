@@ -47,7 +47,11 @@ def asyncio_mode() -> str:
 
 
 try:
-    from router import TOOL_REGISTRY, ArchRouter, ToolRegistry  # type: ignore[import-untyped,unresolved-import]
+    from router import (  # type: ignore[import-untyped,unresolved-import]
+        TOOL_REGISTRY,
+        ArchRouter,
+        ToolRegistry,
+    )
 except ImportError:
     # Router module not available in test environment
     ArchRouter = None  # type: ignore[assignment,misc]

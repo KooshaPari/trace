@@ -3,6 +3,7 @@
 Rich dashboard for DAG-based quality runs with live logs and action plan.
 """
 
+import subprocess
 from typing import Any, ClassVar
 
 try:
@@ -71,6 +72,7 @@ if TEXTUAL_AVAILABLE:
         ]
 
         def compose(self) -> ComposeResult:
+            """Compose the TUI layout with header, panels, and footer."""
             yield Header(show_clock=True)
 
             with Horizontal():
@@ -93,6 +95,7 @@ if TEXTUAL_AVAILABLE:
             yield Footer()
 
         def on_mount(self) -> None:
+            """Handle mount event to initialize the TUI."""
             self.refresh_all()
             self.set_interval(2.0, self.refresh_all)
             self._select_first_step()
@@ -124,10 +127,12 @@ if TEXTUAL_AVAILABLE:
                 log_view = self.query_one("#live-log", LiveLogView)
                 log_view.show_step(step_name)
 
-        def on_data_table_row_selected(self, event: Any) -> None:
+        def on_data_table_row_selected(self, _event: Any) -> None:
+            """Handle row selection in data table."""
             self._on_step_selected()
 
         def action_refresh(self) -> None:
+            """Refresh all panels and notify user."""
             self.refresh_all()
             self.notify("Refreshed", severity="information")
 
@@ -137,13 +142,12 @@ if TEXTUAL_AVAILABLE:
 
         def _run_quality_worker(self) -> None:
             """Worker that runs quality DAG with TUI progress via task."""
-            import subprocess
-
             proc = subprocess.run(
                 ["task", "quality:dag:tui"],
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
+                check=False,
             )
             self.call_from_thread(self.refresh_all)
             if proc.returncode == 0:
@@ -157,13 +161,12 @@ if TEXTUAL_AVAILABLE:
 
         def _run_fix_worker(self) -> None:
             """Worker that runs fix agents via task."""
-            import subprocess
-
             proc = subprocess.run(
                 ["task", "quality:fix"],
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
+                check=False,
             )
             self.call_from_thread(self.refresh_all)
             if proc.returncode == 0:

@@ -2,57 +2,63 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
+    if: contains(github.event.head_commit.message, 'release:') || contains(github.event.head_commit.message, 'chore(release)')
+    outputs:
+      version: $123steps.version.outputs.version125
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Determine version
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: $123secrets.NPM_TOKEN125
+      
+
+  promote:
+    needs: release
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install UV
-        uses: astral-sh/setup-uv@v2
+      - name: Promote to staging
+        uses: KooshaPari/phenotypeActions/promote@main
         with:
-          version: "latest"
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          cache: 'pip'
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: uv sync --all-groups
-
-      - name: Run all quality checks
-        run: uv run poe all
-
-      - name: Build package
-        run: uv build
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to PyPI
-        run: |
-          uv publish --token ${{ secrets.PYPI_TOKEN }}
-        if: success()
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-artifacts
-          path: dist/
-
+          version: $123needs.release.outputs.version125
+          channel: beta
+          registry: npm

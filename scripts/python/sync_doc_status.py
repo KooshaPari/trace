@@ -27,14 +27,14 @@ from typing import Any
 # FR reference patterns in code
 FR_PATTERNS = {
     "python_docstring": re.compile(r'""".*?FR-[A-Z]+-\d{3}.*?"""', re.DOTALL),
-    "python_comment": re.compile(r'#.*?(FR-[A-Z]+-\d{3})'),
-    "go_comment": re.compile(r'//.*?(FR-[A-Z]+-\d{3})'),
-    "ts_comment": re.compile(r'//.*?(FR-[A-Z]+-\d{3})'),
-    "ts_jsdoc": re.compile(r'/\*\*.*?FR-[A-Z]+-\d{3}.*?\*/', re.DOTALL),
+    "python_comment": re.compile(r"#.*?(FR-[A-Z]+-\d{3})"),
+    "go_comment": re.compile(r"//.*?(FR-[A-Z]+-\d{3})"),
+    "ts_comment": re.compile(r"//.*?(FR-[A-Z]+-\d{3})"),
+    "ts_jsdoc": re.compile(r"/\*\*.*?FR-[A-Z]+-\d{3}.*?\*/", re.DOTALL),
 }
 
 # Extract FR ID from text
-FR_ID_PATTERN = re.compile(r'(FR-[A-Z]+-\d{3})')
+FR_ID_PATTERN = re.compile(r"(FR-[A-Z]+-\d{3})")
 
 
 @dataclass
@@ -57,7 +57,14 @@ class TestLocation:
 class DocStatusSyncer:
     """Synchronize documentation status from codebase."""
 
-    def __init__(self, project_root: Path, verbose: bool = False, dry_run: bool = False):
+    def __init__(self, project_root: Path, verbose: bool = False, dry_run: bool = False) -> None:
+        """Initialize the doc status syncer.
+
+        Args:
+            project_root: Root directory of the project.
+            verbose: Enable verbose output.
+            dry_run: Perform dry run without making changes.
+        """
         self.project_root = project_root
         self.verbose = verbose
         self.dry_run = dry_run
@@ -125,7 +132,7 @@ class DocStatusSyncer:
         self.log(f"Found {sum(len(v) for v in fr_locations.values())} FR references in code")
         return fr_locations
 
-    def _scan_file(self, file_path: Path, lang: str, fr_locations: dict[str, list[str]]) -> None:
+    def _scan_file(self, file_path: Path, _lang: str, fr_locations: dict[str, list[str]]) -> None:
         """Scan single file for FR references."""
         try:
             content = file_path.read_text(encoding="utf-8")
@@ -179,7 +186,7 @@ class DocStatusSyncer:
 
         # Run pytest with coverage
         try:
-            result = subprocess.run(
+            subprocess.run(
                 ["pytest", "--cov=src", "--cov-report=json", "--quiet"],
                 cwd=self.project_root,
                 capture_output=True,
@@ -328,9 +335,7 @@ class DocStatusSyncer:
             fr_locations = self.scan_code_for_frs()
             self.update_code_locations(fr_status, fr_locations)
 
-            # 2. Run tests and update coverage
-            # Note: Disabled by default as it's slow - enable with --run-tests
-            # self.run_tests_and_update_coverage(fr_status)
+            # 2. Run tests and update coverage (disabled by default - enable with --run-tests)
 
             # 3. Check git commits
             self.check_git_commits_for_frs(fr_status)

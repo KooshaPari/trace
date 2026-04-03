@@ -1227,8 +1227,7 @@ class TestConflictPanel:
 
         class TestApp(App):
             def compose(self) -> None:
-                panel = cast("Any", ConflictPanel())
-                yield panel
+                yield cast("Any", ConflictPanel())
 
         # Execute compose in Textual app context
         async def run_test() -> None:

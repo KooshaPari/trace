@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 try:
-    from tracertm.tui.apps.quality_runner_app import QualityRunnerApp, TEXTUAL_AVAILABLE
+    from tracertm.tui.apps.quality_runner_app import TEXTUAL_AVAILABLE, QualityRunnerApp
 except ImportError as e:
     print(f"Error: {e}", file=sys.stderr)
     print("Install textual: pip install textual", file=sys.stderr)
@@ -24,6 +24,7 @@ if not TEXTUAL_AVAILABLE:
 
 
 def main() -> int:
+    """Main entry point for the quality runner TUI."""
     app = QualityRunnerApp()
     app.run()
     return 0

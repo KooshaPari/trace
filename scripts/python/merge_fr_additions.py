@@ -132,13 +132,13 @@ def main() -> int:
 
     print(f"✓ Merged 30 FR additions into {fr_file}")
     print("✓ Updated Summary section counts")
-    print("")
+    print()
     print("New FRs added:")
     print("  - FR-APP-001 through FR-APP-010 (10 FRs)")
     print("  - FR-QUAL-001 through FR-QUAL-008 (8 FRs)")
     print("  - FR-RPT-001 through FR-RPT-009 (9 FRs)")
     print("  - FR-COLLAB-001 through FR-COLLAB-003 (3 FRs)")
-    print("")
+    print()
     print("Ready to run: python scripts/python/annotate_apis_with_frs.py")
 
     return 0

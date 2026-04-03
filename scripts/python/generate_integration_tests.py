@@ -76,7 +76,7 @@ class IntegrationTestGenerator:
 
         self.generated_count += 1
         if self.generated_count % 50 == 0:
-            pass
+            print(f"Generated {self.generated_count} tests...")
 
     def generate(self) -> None:
         """Generate."""

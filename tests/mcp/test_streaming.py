@@ -1,14 +1,16 @@
-from typing import Any
-
 """Tests for streaming and pagination MCP tools."""
 
 from __future__ import annotations
+
+from typing import Any
 
 import pytest
 
 
 class TestStreamImpactAnalysis:
     """Tests for stream_impact_analysis tool."""
+
+    # Traces to: FR-GRAPH-002 (impact analysis), FR-COLLAB-001 (real-time updates)
 
     @pytest.mark.asyncio
     async def test_stream_impact_returns_depth_levels(
@@ -39,6 +41,8 @@ class TestStreamImpactAnalysis:
 class TestGetMatrixPage:
     """Tests for get_matrix_page tool."""
 
+    # Traces to: FR-RTM-003 (RTM matrix view), FR-RTM-004 (requirement search & filtering)
+
     @pytest.mark.asyncio
     async def test_matrix_page_returns_rows(self) -> None:
         """Test that matrix page returns correct rows."""
@@ -59,6 +63,8 @@ class TestGetMatrixPage:
 class TestGetImpactByDepth:
     """Tests for get_impact_by_depth tool."""
 
+    # Traces to: FR-GRAPH-002 (impact analysis)
+
     @pytest.mark.asyncio
     async def test_impact_by_depth_returns_single_level(self) -> None:
         """Test that only items at specified depth are returned."""
@@ -74,6 +80,8 @@ class TestGetImpactByDepth:
 
 class TestGetItemsPage:
     """Tests for get_items_page tool."""
+
+    # Traces to: FR-RTM-004 (requirement search & filtering)
 
     @pytest.mark.asyncio
     async def test_items_page_basic(self) -> None:
@@ -94,6 +102,8 @@ class TestGetItemsPage:
 
 class TestGetLinksPage:
     """Tests for get_links_page tool."""
+
+    # Traces to: FR-LINK-003, FR-LINK-004
 
     @pytest.mark.asyncio
     async def test_links_page_basic(self) -> None:

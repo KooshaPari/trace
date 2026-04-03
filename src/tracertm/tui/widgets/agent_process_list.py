@@ -4,7 +4,6 @@ Displays fix agent jobs (name, status). Placeholder until fix runner is implemen
 """
 
 import json
-from pathlib import Path
 from typing import Any
 
 try:
@@ -39,9 +38,11 @@ if TEXTUAL_AVAILABLE:
         """Static widget showing fix agent jobs."""
 
         def __init__(self, *args: Any, **kwargs: Any) -> None:
+            """Initialize the agent process list."""
             super().__init__("", *args, **kwargs)
 
         def on_mount(self) -> None:
+            """Handle mount event to refresh content."""
             self.refresh_content()
 
         def refresh_content(self) -> None:
